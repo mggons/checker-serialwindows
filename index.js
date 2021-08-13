@@ -48,20 +48,9 @@ const axios = require("axios");
 
 
 /******COMIENZO DE LA ENTRADA JSON******/
-const welkom = JSON.parse(fs.readFileSync('./database/json/welkom.json'))
-const nsfw = JSON.parse(fs.readFileSync('./database/json/nsfw.json'))
-const samih = JSON.parse(fs.readFileSync('./database/json/simi.json'))
 const user = JSON.parse(fs.readFileSync('./database/json/user.json'))
-const _leveling = JSON.parse(fs.readFileSync('./database/json/leveling.json'))
-const _level = JSON.parse(fs.readFileSync('./database/json/level.json'))
 const setting = JSON.parse(fs.readFileSync('./src/settings.json'))
 const grupoadmin = JSON.parse(fs.readFileSync('./admin/grupoadmin.json'))
-const results = JSON.parse(fs.readFileSync('./src/results.json'))
-const regla = JSON.parse(fs.readFileSync('./src/reglas.json')) //lista de reglas grupales
-const bad = JSON.parse(fs.readFileSync('./src/bad.json'))
-const BadWord = JSON.parse(fs.readFileSync('./src/BadWord.json'))
-const admins = JSON.parse(fs.readFileSync('./admin/admins.json'))
-const autorize = JSON.parse(fs.readFileSync('./admin/autorize.json'))
 
 /******FIN DE ENTRADA JSON******/
 
@@ -162,15 +151,7 @@ async function starts() {
 				wait: '⌛ *En proceso, tardara un momento...* ⌛',
 				waitcid: '⌛ *En proceso, optedremos tu CID de windows/office...* ⌛',
 				waitpid: '⌛ *En proceso, averiguamos si tu serial es valido...* ⌛',
-				success: '✔️ Listo ✔️'
-				error: {
-					stick: '[❎] Falló, se produjo un error al convertir la imagen en una pegatina',
-					foto: '❌ *¿Y la  foto?* ❌',
-					translate: '❌ *No es posible traducir este texto* ❌',
-					yterror: '❌ *No es posible recibir informacion del servidor* ❌',
-					fail: '❌ *Enlace inválido o Fallo en descarga* ❌',
-					Iv: '❌ Link inválido ❌'
-				},
+				success: '✔️ Listo ✔️',
 				only: {
 					group: '[❗] Este comando es solo para grupos',
 					ownerG: '[❗] Este comando solo puede ser utilizado por un admin del grupo',
@@ -189,18 +170,13 @@ async function starts() {
 			const sender = isGroup ? mek.participant : mek.key.remoteJid
 			const groupMetadata = isGroup ? await client.groupMetadata(from) : ''
 			const groupName = isGroup ? groupMetadata.subject : ''
-			const isAntiLink = isGroup ? antilink.includes(from) : false
 			const groupId = isGroup ? groupMetadata.jid : ''
 			const groupMembers = isGroup ? groupMetadata.participants : ''
             const groupAdmins = isGroup ? getGroupAdmins(groupMembers) : ''
 			const isBotGroupAdmins = groupAdmins.includes(botNumber) || false
 			const isGroupAdmins = groupAdmins.includes(sender) || false
-			const isWelkom = isGroup ? welkom.includes(from) : false
-			const isNsfw = isGroup ? nsfw.includes(from) : false
-			const isSimi = isGroup ? samih.includes(from) : false
 			const isOwner = ownerNumber.includes(sender)
             const isUser = user.includes(sender)
-            const isLevelingOn = isGroup ? _leveling.includes(groupId) : false
             //const NomerOwner = '593997889284@s.whatsapp.net'
 
 			const isUrl = (url) => {
@@ -233,7 +209,7 @@ async function starts() {
 
 				//Funcion de cambio de prefijo de bot
 				case 'setprefix':
-					if (!isUser) return reply(mess.only.registro)
+					
 					if (args.length < 1) return
 					if (!isOwner) return reply(mess.only.ownerB)
 					prefix = args[0]
@@ -258,7 +234,6 @@ async function starts() {
 				//Comando para verificar claves de windows u office
 				case 'pid':
 				case 'PID':
-					if (!isUser) return reply(mess.only.registro)
 					act0= await getBuffer(`https://www.ardilu.com/wp-content/uploads/2019/01/claves-genericas-windows-10.jpg`)
 					if (args.length < 1) return client.sendMessage(from, act0, image, { quoted: mek , caption : `¿Cual es la clave a testear?... Ejemplo: ${prefix}PID XXXXX-XXXXX-XXXXX-XXXXX-XXXXX`})
 					reply(mess.waitpid)
@@ -270,7 +245,6 @@ async function starts() {
 
 				case 'cid':
 				case 'CID':
-					if (!isUser) return reply(mess.only.registro)
 					act1= await getBuffer(`https://3.bp.blogspot.com/-nOI4gWHTJIs/V6ripqom34I/AAAAAAAAH1E/FFliA73LGIMYUzSre27_OdiBeBqDdeNYwCLcB/s1600/Windows-10-Activar-telefono-chat-%25284%2529.PNG`)
 					act2= await getBuffer(`http://2.bp.blogspot.com/-xeJYzTqt33k/UMOzCQ4RcrI/AAAAAAAAARs/HXCNA8Sk1NQ/s1600/2vakydx.png`)
 					if (args.length < 1) return client.sendMessage(from, act1, image, { quoted: mek , caption : `Cual es tu numero de CID... Ejemplo: ${prefix}CID 482959050031106449915731380086642307697546230726111227435334801`}),client.sendMessage(from, act2, image, { quoted: mek } )
@@ -279,13 +253,10 @@ async function starts() {
 					teks = `${anu}`
 					logoms= await getBuffer(`https://winphonemetro.com/files/2012/08/Microsoft-Nuevo-Logotipo1.jpg`)
 					client.sendMessage(from, logoms, image, { quoted: mek, caption : teks } )
-					//client.sendMessage(from, act1, act2, image, { quoted: mek } )
-					//client.sendMessage(from,  image, { quoted: mek } )
 					break
 
 				//Funcion de Ping del servidor
 				case 'status':   
-					if (!isUser) return reply(mess.only.userB)
 				 	const timestamp = speed();
 				 	const latensi = speed() - timestamp
 				 	client.updatePresence(from, Presence.composing) 
